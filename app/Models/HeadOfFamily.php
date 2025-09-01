@@ -25,7 +25,10 @@ class HeadOfFamily extends Model
 
     public function scopeSearch($query, $search)
     {
-        return $query->where('identify_number', 'like', '%' . $search . '%')
+        return $query->whereHas('user', function ($q) use ($search) {
+            $q->where('name', 'like', '%' . $search . '%')
+                ->orWhere('email', 'like', '&' . $search . '%');
+        })->orWhere('identify_number', 'like', '%' . $search . '%')
             ->orWhere('gender', 'like', '%' . $search . '%')
             ->orWhere('occupation', 'like', '%' . $search . '%')
             ->orWhere('marital_status', 'like', '%' . $search . '%');

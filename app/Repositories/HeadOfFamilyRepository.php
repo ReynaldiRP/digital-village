@@ -21,6 +21,8 @@ class HeadOfFamilyRepository implements HeadOfFamilyRepositoryInterface
             }
         });
 
+        $query->latest();
+
         // Apply limit if provided
         if ($limit) {
             $query->take($limit);

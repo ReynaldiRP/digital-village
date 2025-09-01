@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\ResponseHelper;
+use App\Http\Requests\HeadOfFamily\HeadOfFamilyStoreRequest;
 use App\Http\Resources\HeadOfFamilyResource;
 use App\Http\Resources\PaginatedResource;
 use App\Interfaces\HeadOfFamilyRepositoryInterface;
@@ -70,7 +71,7 @@ class HeadOfFamilyController extends Controller
             return ResponseHelper::jsonResponse(
                 true,
                 'Data Kepala Keluarga Berhasil Diambil',
-                PaginatedResource::make($headOfFamilies),
+                new PaginatedResource($headOfFamilies, HeadOfFamilyResource::class),
                 200
             );
         } catch (\Exception $e) {
@@ -86,9 +87,26 @@ class HeadOfFamilyController extends Controller
     /**
      * Store a newly created head of families in storage.
      */
-    public function store(Request $request)
+    public function store(HeadOfFamilyStoreRequest $request)
     {
-        //
+        $request = $request->validated();
+        try {
+            $headOfFamilies = $this->headOfFamilyRepository->create($request);
+
+            return ResponseHelper::jsonResponse(
+                true,
+                'Data Kepala Keluarga Berhasil Ditambahkan',
+                new HeadOfFamilyResource($headOfFamilies),
+                201
+            );
+        } catch (\Exception $e) {
+            return ResponseHelper::jsonResponse(
+                false,
+                $e->getMessage(),
+                null,
+                500
+            );
+        }
     }
 
     /**

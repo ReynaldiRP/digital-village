@@ -28,7 +28,6 @@ class PaginatedResource extends JsonResource
         return $resource;
     }
 
-
     /**
      * Transform the resource into an array.
      *
@@ -37,10 +36,9 @@ class PaginatedResource extends JsonResource
      */
     public function toArray(Request $request)
     {
-        $items = method_exists($this->resource, 'items') ? $this->items() : $this->resource;
         // FIXME: fix the structure response in paginated 
         return [
-            'data' => $this->collect($items),
+            'items' => $this->collect($this->items()),
             'meta' => [
                 'current_page' => $this->currentPage(),
                 'from' => $this->firstItem(),

@@ -18,7 +18,6 @@ class HeadOfFamilyFactory extends Factory
     public function definition(): array
     {
         return [
-            'user_id' => User::pluck('id')->random(),
             'profile_picture' => $this->faker->imageUrl(),
             'identify_number' => $this->faker->unique()->numerify('##########'),
             'gender' => $this->faker->randomElement(['male', 'female']),

@@ -21,7 +21,8 @@ class HeadOfFamilyResource extends JsonResource
             'birth_date' => $this->birth_date,
             'phone_number' => $this->phone_number,
             'occupation' => $this->occupation,
-            'marital_status' => $this->marital_status
+            'marital_status' => $this->marital_status,
+            'created_at' => $this->created_at->format('d F Y H:i')
         ];
     }
 }
