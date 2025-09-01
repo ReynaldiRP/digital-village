@@ -1,0 +1,34 @@
+<?php
+
+namespace App\Models;
+
+use App\Traits\UUID;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
+
+class SocialAssistanceRecipient extends Model
+{
+    use UUID, SoftDeletes;
+
+    protected $fillable = [
+        'social_assistance_id',
+        'head_of_family_id',
+        'amount',
+        'reason',
+        'bank',
+        'account_number',
+        'proof',
+        'status',
+    ];
+
+    public function socialAssistance(): BelongsTo
+    {
+        return $this->belongsTo(SocialAssistance::class, 'social_assistance_id');
+    }
+
+    public function headOfFamily(): BelongsTo
+    {
+        return $this->belongsTo(HeadOfFamily::class, 'head_of_family_id');
+    }
+}
