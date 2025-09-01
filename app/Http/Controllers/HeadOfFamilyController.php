@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\ResponseHelper;
+use App\Http\Resources\HeadOfFamilyResource;
 use App\Http\Resources\PaginatedResource;
 use App\Interfaces\HeadOfFamilyRepositoryInterface;
 use Illuminate\Http\JsonResponse;
@@ -34,7 +35,7 @@ class HeadOfFamilyController extends Controller
             return ResponseHelper::jsonResponse(
                 true,
                 'Data Kepala Keluarga Berhasil Diambil',
-                $headOfFamilies,
+                HeadOfFamilyResource::collection($headOfFamilies),
                 200
             );
         } catch (\Exception $e) {

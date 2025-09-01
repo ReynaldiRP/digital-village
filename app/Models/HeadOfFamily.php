@@ -23,6 +23,13 @@ class HeadOfFamily extends Model
         'marital_status',
     ];
 
+    public function scopeSearch($query, $search)
+    {
+        return $query->where('identify_number', 'like', '%' . $search . '%')
+            ->orWhere('gender', 'like', '%' . $search . '%')
+            ->orWhere('occupation', 'like', '%' . $search . '%')
+            ->orWhere('marital_status', 'like', '%' . $search . '%');
+    }
 
     public function user(): BelongsTo
     {
