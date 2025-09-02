@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Helpers\ResponseHelper;
 use App\Http\Requests\HeadOfFamily\HeadOfFamilyStoreRequest;
+use App\Http\Requests\HeadOfFamily\HeadOfFamilyUpdateRequest;
 use App\Http\Resources\HeadOfFamilyResource;
 use App\Http\Resources\PaginatedResource;
 use App\Interfaces\HeadOfFamilyRepositoryInterface;
@@ -114,22 +115,81 @@ class HeadOfFamilyController extends Controller
      */
     public function show(string $id)
     {
-        //
+        try {
+            $headOfFamilies = $this->headOfFamilyRepository->getById($id);
+
+            if (!$headOfFamilies) {
+                return ResponseHelper::jsonResponse(
+                    false,
+                    'Data Kepala Keluarga Tidak Ditemukan',
+                    null,
+                    404
+                );
+            }
+
+            return ResponseHelper::jsonResponse(
+                true,
+                'Detail Kepala Keluarga Berhasil Diambil',
+                new HeadOfFamilyResource($headOfFamilies),
+                200
+            );
+        } catch (\Exception $e) {
+            return ResponseHelper::jsonResponse(
+                false,
+                $e->getMessage(),
+                null,
+                500
+            );
+        }
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(HeadOfFamilyUpdateRequest $request, string $id)
     {
-        //
+        $request = $request->validated();
+
+        try {
+            $headOfFamilies = $this->headOfFamilyRepository->update($id, $request);
+
+            return ResponseHelper::jsonResponse(
+                true,
+                'Data Kepala Keluarga Berhasil Diupdate',
+                new HeadOfFamilyResource($headOfFamilies),
+                200
+            );
+        } catch (\Exception $e) {
+            return ResponseHelper::jsonResponse(
+                false,
+                $e->getMessage(),
+                null,
+                500
+            );
+        }
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Remove the specified head of family from storage.
      */
     public function destroy(string $id)
     {
-        //
+        try {
+            $headOfFamilies = $this->headOfFamilyRepository->destroy($id);
+
+            return ResponseHelper::jsonResponse(
+                true,
+                'Data Kepala Keluarga Berhasil Dihapus',
+                new HeadOfFamilyResource($headOfFamilies),
+                200
+            );
+        } catch (\Exception $e) {
+            return ResponseHelper::jsonResponse(
+                false,
+                $e->getMessage(),
+                null,
+                500
+            );
+        }
     }
 }

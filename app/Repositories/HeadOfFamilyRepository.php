@@ -64,17 +64,68 @@ class HeadOfFamilyRepository implements HeadOfFamilyRepositoryInterface
         try {
             $headOfFamily = new HeadOfFamily();
             $headOfFamily->user_id = $data['user_id'];
-            $headOfFamily->profile_picture = $data['profile_picture'] ?? null;
-            $headOfFamily->identify_number = $data['identify_number'] ?? null;
-            $headOfFamily->gender = $data['gender'] ?? null;
-            $headOfFamily->birth_date = $data['birth_date'] ?? null;
-            $headOfFamily->phone_number = $data['phone_number'] ?? null;
-            $headOfFamily->occupation = $data['occupation'] ?? null;
-            $headOfFamily->marital_status = $data['marital_status'] ?? null;
+            $headOfFamily->profile_picture = $data['profile_picture']->store('assets/head-of-families', 'public');
+            $headOfFamily->identify_number = $data['identify_number'];
+            $headOfFamily->gender = $data['gender'];
+            $headOfFamily->birth_date = $data['birth_date'];
+            $headOfFamily->phone_number = $data['phone_number'];
+            $headOfFamily->occupation = $data['occupation'];
+            $headOfFamily->marital_status = $data['marital_status'];
 
             $headOfFamily->save();
 
             DB::commit();
+            return $headOfFamily;
+        } catch (\Exception $e) {
+            DB::rollBack();
+            throw new Exception($e->getMessage());
+        }
+    }
+
+    public function update(
+        string $id,
+        array $data
+    ) {
+        DB::beginTransaction();
+
+        try {
+            $headOfFamily = HeadOfFamily::findOrFail($id);
+
+            $headOfFamily->user_id = $data['user_id'] ?? $headOfFamily->user_id;
+
+            if (isset($data['profile_picture'])) {
+                $headOfFamily->profile_picture = $data['profile_picture']->store('assets/head-of-families', 'public');
+            }
+
+            $headOfFamily->identify_number = $data['identify_number'] ?? $headOfFamily->identify_number;
+            $headOfFamily->gender = $data['gender'] ?? $headOfFamily->gender;
+            $headOfFamily->birth_date = $data['birth_date'] ?? $headOfFamily->birth_date;
+            $headOfFamily->phone_number = $data['phone_number'] ?? $headOfFamily->phone_number;
+            $headOfFamily->occupation = $data['occupation'] ?? $headOfFamily->occupation;
+            $headOfFamily->marital_status = $data['marital_status'] ?? $headOfFamily->marital_status;
+
+            $headOfFamily->save();
+
+            DB::commit();
+
+            return $headOfFamily;
+        } catch (\Exception $e) {
+            DB::rollBack();
+            throw new Exception($e->getMessage());
+        }
+    }
+
+    public function destroy(
+        string $id
+    ) {
+        DB::beginTransaction();
+
+        try {
+            $headOfFamily = HeadOfFamily::findOrFail($id);
+            $headOfFamily->delete();
+
+            DB::commit();
+
             return $headOfFamily;
         } catch (\Exception $e) {
             DB::rollBack();
