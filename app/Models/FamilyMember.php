@@ -3,13 +3,15 @@
 namespace App\Models;
 
 use App\Traits\UUID;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class FamilyMember extends Model
 {
-    use UUID, SoftDeletes;
+    use UUID, SoftDeletes, HasFactory;
 
     protected $fillable = [
         'head_of_family_id',
@@ -24,6 +26,19 @@ class FamilyMember extends Model
         'relation',
     ];
 
+    public function scopeSearch($query, $search): Builder
+    {
+        return $query->whereHas('user', function ($q) use ($search) {
+            $q->where('name', 'like', '%' . $search . '%')
+                ->orWhere('email', 'like', '&' . $search . '%');
+        })->orWhere('identify_number', 'like', '%' . $search . '%')
+            ->orWhere('gender', 'like', '%' . $search . '%')
+            ->orWhere('birth_date', 'like', '%' . $search . '%')
+            ->orWhere('phone_number', 'like', '%' . $search . '%')
+            ->orWhere('occupation', 'like', '%' . $search . '%')
+            ->orWhere('marital_status', 'like', '%' . $search . '%')
+            ->orWhere('relation', 'like', '%' . $search . '%');
+    }
 
     public function headOfFamily(): BelongsTo
     {

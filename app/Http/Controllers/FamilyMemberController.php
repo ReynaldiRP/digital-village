@@ -3,32 +3,32 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\ResponseHelper;
-use App\Http\Requests\HeadOfFamilies\HeadOfFamilyStoreRequest;
-use App\Http\Requests\HeadOfFamilies\HeadOfFamilyUpdateRequest;
-use App\Http\Resources\HeadOfFamilyResource;
+use App\Http\Requests\FamilyMembers\FamilyMemberStoreRequest;
+use App\Http\Requests\FamilyMembers\FamilyMemberUpdateRequest;
+use App\Http\Resources\FamilyMemberResource;
 use App\Http\Resources\PaginatedResource;
-use App\Interfaces\HeadOfFamilyRepositoryInterface;
+use App\Interfaces\FamilyMemberRepositoryInterface;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
-class HeadOfFamilyController extends Controller
+class FamilyMemberController extends Controller
 {
-    private HeadOfFamilyRepositoryInterface $headOfFamilyRepository;
+    private FamilyMemberRepositoryInterface $familyMemberRepository;
 
-    public function __construct(HeadOfFamilyRepositoryInterface $headOfFamilyRepository)
+    public function __construct(FamilyMemberRepositoryInterface $familyMemberRepository)
     {
-        $this->headOfFamilyRepository = $headOfFamilyRepository;
+        $this->familyMemberRepository = $familyMemberRepository;
     }
 
     /**
-     * Display a listing of the Head Of Families.
+     * Display a listing of the family members.
      * @param Request $request
      * @return JsonResponse
      */
     public function index(Request $request): JsonResponse
     {
         try {
-            $headOfFamilies = $this->headOfFamilyRepository->getAll(
+            $familyMembers = $this->familyMemberRepository->getAll(
                 $request->search,
                 $request->limit,
                 true
@@ -36,8 +36,8 @@ class HeadOfFamilyController extends Controller
 
             return ResponseHelper::jsonResponse(
                 true,
-                'Data Kepala Keluarga Berhasil Diambil',
-                HeadOfFamilyResource::collection($headOfFamilies),
+                'Berhasil mendapatkan data anggota keluarga',
+                FamilyMemberResource::collection($familyMembers),
                 200
             );
         } catch (\Exception $e) {
@@ -51,7 +51,7 @@ class HeadOfFamilyController extends Controller
     }
 
     /**
-     * Get all head of families paginated.
+     * Get all family members paginated.
      * @param Request $request
      * @return JsonResponse
      */
@@ -63,16 +63,15 @@ class HeadOfFamilyController extends Controller
                 'row_per_page' => 'required',
             ]);
 
-
-            $headOfFamilies = $this->headOfFamilyRepository->getAllPaginated(
+            $familyMembers = $this->familyMemberRepository->getAllPaginated(
                 $request['search'] ?? null,
                 $request['row_per_page']
             );
 
             return ResponseHelper::jsonResponse(
                 true,
-                'Data Kepala Keluarga Berhasil Diambil',
-                new PaginatedResource($headOfFamilies, HeadOfFamilyResource::class),
+                'Berhasil mendapatkan data anggota keluarga',
+                PaginatedResource::make($familyMembers, FamilyMemberResource::class),
                 200
             );
         } catch (\Exception $e) {
@@ -86,18 +85,21 @@ class HeadOfFamilyController extends Controller
     }
 
     /**
-     * Store a newly created head of families in storage.
+     * Store a newly created family member in storage.
+     * @param FamilyMemberStoreRequest $request
+     * @return JsonResponse
      */
-    public function store(HeadOfFamilyStoreRequest $request)
+    public function store(FamilyMemberStoreRequest $request): JsonResponse
     {
         $request = $request->validated();
+
         try {
-            $headOfFamilies = $this->headOfFamilyRepository->create($request);
+            $familyMember = $this->familyMemberRepository->create($request);
 
             return ResponseHelper::jsonResponse(
                 true,
-                'Data Kepala Keluarga Berhasil Ditambahkan',
-                new HeadOfFamilyResource($headOfFamilies),
+                'Berhasil menambahkan anggota keluarga',
+                new FamilyMemberResource($familyMember),
                 201
             );
         } catch (\Exception $e) {
@@ -111,17 +113,19 @@ class HeadOfFamilyController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Display the specified family member.
+     * @param string $id
+     * @return JsonResponse
      */
-    public function show(string $id)
+    public function show(string $id): JsonResponse
     {
         try {
-            $headOfFamilies = $this->headOfFamilyRepository->getById($id);
+            $familyMember = $this->familyMemberRepository->getById($id);
 
-            if (!$headOfFamilies) {
+            if (!$familyMember) {
                 return ResponseHelper::jsonResponse(
                     false,
-                    'Data Kepala Keluarga Tidak Ditemukan',
+                    'Data anggota keluarga tidak ditemukan',
                     null,
                     404
                 );
@@ -129,8 +133,8 @@ class HeadOfFamilyController extends Controller
 
             return ResponseHelper::jsonResponse(
                 true,
-                'Detail Kepala Keluarga Berhasil Diambil',
-                new HeadOfFamilyResource($headOfFamilies),
+                'Berhasil mendapatkan data anggota keluarga',
+                new FamilyMemberResource($familyMember),
                 200
             );
         } catch (\Exception $e) {
@@ -144,19 +148,22 @@ class HeadOfFamilyController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update the specified family member in storage.
+     * @param FamilyMemberUpdateRequest $request
+     * @param string $id
+     * @return JsonResponse
      */
-    public function update(HeadOfFamilyUpdateRequest $request, string $id)
+    public function update(FamilyMemberUpdateRequest $request, string $id): JsonResponse
     {
         $request = $request->validated();
 
         try {
-            $headOfFamilies = $this->headOfFamilyRepository->update($id, $request);
+            $familyMember = $this->familyMemberRepository->update($id, $request);
 
             return ResponseHelper::jsonResponse(
                 true,
-                'Data Kepala Keluarga Berhasil Diupdate',
-                new HeadOfFamilyResource($headOfFamilies),
+                'Berhasil memperbarui anggota keluarga',
+                new FamilyMemberResource($familyMember),
                 200
             );
         } catch (\Exception $e) {
@@ -170,17 +177,19 @@ class HeadOfFamilyController extends Controller
     }
 
     /**
-     * Remove the specified head of family from storage.
+     * Remove the specified family member from storage.
+     * @param string $id
+     * @return JsonResponse
      */
-    public function destroy(string $id)
+    public function destroy(string $id): JsonResponse
     {
         try {
-            $headOfFamilies = $this->headOfFamilyRepository->destroy($id);
+            $deleted = $this->familyMemberRepository->destroy($id);
 
             return ResponseHelper::jsonResponse(
                 true,
-                'Data Kepala Keluarga Berhasil Dihapus',
-                new HeadOfFamilyResource($headOfFamilies),
+                'Berhasil menghapus anggota keluarga',
+                null,
                 200
             );
         } catch (\Exception $e) {

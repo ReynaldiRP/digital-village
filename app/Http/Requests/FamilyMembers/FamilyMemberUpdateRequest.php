@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\HeadOfFamily;
+namespace App\Http\Requests\FamilyMembers;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class HeadOfFamilyUpdateRequest extends FormRequest
+class FamilyMemberUpdateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,20 +22,32 @@ class HeadOfFamilyUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'user_id' => 'sometimes|exists:users,id',
-            'profile_picture' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'identify_number' => 'sometimes|string|max:255',
+            'head_of_family_id' => 'sometimes|exists:head_of_families,id',
+            'user_id' => [
+                'sometimes',
+                'exists:users,id',
+                'unique:family_members,user_id,' . request()->route('family_member')
+            ],
+            'profile_picture' => 'nullable|image|max:2048',
+            'identify_number' => [
+                'sometimes',
+                'string',
+                'max:20',
+                'unique:family_members,identify_number,' . request()->route('family_member')
+            ],
             'gender' => 'sometimes|string|in:male,female',
             'birth_date' => 'sometimes|date',
-            'phone_number' => 'sometimes|string|max:20',
-            'occupation' => 'sometimes|string|max:255',
+            'phone_number' => 'sometimes|string|max:15',
+            'occupation' => 'sometimes|string|max:100',
             'marital_status' => 'sometimes|string|in:single,married',
+            'relation' => 'sometimes|string|max:50|in:child,wife,husband',
         ];
     }
 
     public function attributes()
     {
         return [
+            'head_of_family_id' => 'ID Kepala Keluarga',
             'user_id' => 'ID Pengguna',
             'profile_picture' => 'Foto Profil',
             'identify_number' => 'Nomor Identitas',
@@ -43,7 +55,8 @@ class HeadOfFamilyUpdateRequest extends FormRequest
             'birth_date' => 'Tanggal Lahir',
             'phone_number' => 'Nomor Telepon',
             'occupation' => 'Pekerjaan',
-            'marital_status' => 'Status Pernikahan',
+            'marital_status' => 'Status Perkawinan',
+            'relation' => 'Hubungan',
         ];
     }
 
@@ -54,12 +67,10 @@ class HeadOfFamilyUpdateRequest extends FormRequest
             'string'   => ':attribute harus berupa string.',
             'max'      => ':attribute maksimal :max karakter.',
             'date'     => ':attribute harus berupa tanggal yang valid.',
-            'image'    => ':attribute harus berupa gambar.',
-
-            'user_id.exists'       => 'ID Pengguna tidak ditemukan.',
-            'profile_picture.max'  => 'Foto Profil maksimal berukuran 2MB.',
-            'gender.in'            => ':attribute tidak valid.',
-            'marital_status.in'    => ':attribute tidak valid.',
+            'exists'   => ':attribute tidak ditemukan di database.',
+            'unique'   => ':attribute sudah digunakan.',
+            'in'       => ':attribute tidak valid.',
+            'image'    => ':attribute harus berupa file gambar.',
         ];
     }
 }

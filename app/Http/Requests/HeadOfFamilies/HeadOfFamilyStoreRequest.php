@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests\HeadOfFamily;
+namespace App\Http\Requests\HeadOfFamilies;
 
 use Illuminate\Foundation\Http\FormRequest;
 
