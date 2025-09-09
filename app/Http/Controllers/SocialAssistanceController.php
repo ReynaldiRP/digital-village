@@ -3,32 +3,33 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\ResponseHelper;
-use App\Http\Requests\HeadOfFamilies\HeadOfFamilyStoreRequest;
-use App\Http\Requests\HeadOfFamilies\HeadOfFamilyUpdateRequest;
-use App\Http\Resources\HeadOfFamilyResource;
+use App\Http\Requests\SocialAssistances\SocialAssistanceStoreRequest;
+use App\Http\Requests\SocialAssistances\SocialAssistanceUpdateRequest;
 use App\Http\Resources\PaginatedResource;
-use App\Interfaces\HeadOfFamilyRepositoryInterface;
+use App\Http\Resources\SocialAssistanceResource;
+use App\Interfaces\SocialAssistanceRepositoryInterface;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
-class HeadOfFamilyController extends Controller
+class SocialAssistanceController extends Controller
 {
-    private HeadOfFamilyRepositoryInterface $headOfFamilyRepository;
+    private SocialAssistanceRepositoryInterface $socialAssistanceRepository;
 
-    public function __construct(HeadOfFamilyRepositoryInterface $headOfFamilyRepository)
+    public function __construct(SocialAssistanceRepositoryInterface $socialAssistanceRepository)
     {
-        $this->headOfFamilyRepository = $headOfFamilyRepository;
+        $this->socialAssistanceRepository = $socialAssistanceRepository;
     }
 
+
     /**
-     * Display a listing of the Head Of Families.
+     * Display a listing of the social assistance.
      * @param Request $request
      * @return JsonResponse
      */
     public function index(Request $request): JsonResponse
     {
         try {
-            $headOfFamilies = $this->headOfFamilyRepository->getAll(
+            $socialAssistances = $this->socialAssistanceRepository->getAll(
                 $request->search,
                 $request->limit,
                 true
@@ -36,8 +37,8 @@ class HeadOfFamilyController extends Controller
 
             return ResponseHelper::jsonResponse(
                 true,
-                'Data Kepala Keluarga Berhasil Diambil',
-                HeadOfFamilyResource::collection($headOfFamilies),
+                'Berhasil mendapatkan data bantuan sosial',
+                SocialAssistanceResource::collection($socialAssistances),
                 200
             );
         } catch (\Exception $e) {
@@ -51,7 +52,7 @@ class HeadOfFamilyController extends Controller
     }
 
     /**
-     * Get all head of families paginated.
+     * Get all social assistance paginated.
      * @param Request $request
      * @return JsonResponse
      */
@@ -63,16 +64,15 @@ class HeadOfFamilyController extends Controller
                 'row_per_page' => 'required',
             ]);
 
-
-            $headOfFamilies = $this->headOfFamilyRepository->getAllPaginated(
+            $socialAssistances = $this->socialAssistanceRepository->getAllPaginated(
                 $request['search'] ?? null,
                 $request['row_per_page']
             );
 
             return ResponseHelper::jsonResponse(
                 true,
-                'Data Kepala Keluarga Berhasil Diambil',
-                new PaginatedResource($headOfFamilies, HeadOfFamilyResource::class),
+                'Berhasil mendapatkan data bantuan sosial',
+                PaginatedResource::make($socialAssistances, SocialAssistanceResource::class),
                 200
             );
         } catch (\Exception $e) {
@@ -86,20 +86,21 @@ class HeadOfFamilyController extends Controller
     }
 
     /**
-     * Store a newly created head of families in storage.
-     * @param HeadOfFamilyStoreRequest $request
+     * Store a newly created social assistance in storage.
+     * @param SocialAssistanceStoreRequest $request
      * @return JsonResponse
      */
-    public function store(HeadOfFamilyStoreRequest $request): JsonResponse
+    public function store(SocialAssistanceStoreRequest $request): JsonResponse
     {
         $request = $request->validated();
+
         try {
-            $headOfFamilies = $this->headOfFamilyRepository->create($request);
+            $socialAssistance = $this->socialAssistanceRepository->create($request);
 
             return ResponseHelper::jsonResponse(
                 true,
-                'Data Kepala Keluarga Berhasil Ditambahkan',
-                new HeadOfFamilyResource($headOfFamilies),
+                'Berhasil menambahkan data bantuan sosial',
+                new SocialAssistanceResource($socialAssistance),
                 201
             );
         } catch (\Exception $e) {
@@ -113,19 +114,19 @@ class HeadOfFamilyController extends Controller
     }
 
     /**
-     * Display the specified head of family.
+     * Display the specified social assistance.
      * @param string $id
      * @return JsonResponse
      */
     public function show(string $id): JsonResponse
     {
         try {
-            $headOfFamilies = $this->headOfFamilyRepository->getById($id);
+            $socialAssistance = $this->socialAssistanceRepository->getById($id);
 
-            if (!$headOfFamilies) {
+            if (!$socialAssistance) {
                 return ResponseHelper::jsonResponse(
                     false,
-                    'Data Kepala Keluarga Tidak Ditemukan',
+                    'Data bantuan sosial tidak ditemukan',
                     null,
                     404
                 );
@@ -133,8 +134,8 @@ class HeadOfFamilyController extends Controller
 
             return ResponseHelper::jsonResponse(
                 true,
-                'Detail Kepala Keluarga Berhasil Diambil',
-                new HeadOfFamilyResource($headOfFamilies),
+                'Berhasil mendapatkan data bantuan sosial',
+                new SocialAssistanceResource($socialAssistance),
                 200
             );
         } catch (\Exception $e) {
@@ -148,22 +149,33 @@ class HeadOfFamilyController extends Controller
     }
 
     /**
-     * Update the specified head of family in storage.
-     * @param HeadOfFamilyUpdateRequest $request
+     * Update the specified social assistance in storage.
+     * @param SocialAssistanceUpdateRequest $request
      * @param string $id
      * @return JsonResponse
      */
-    public function update(HeadOfFamilyUpdateRequest $request, string $id): JsonResponse
+    public function update(SocialAssistanceUpdateRequest $request, string $id): JsonResponse
     {
         $request = $request->validated();
 
         try {
-            $headOfFamilies = $this->headOfFamilyRepository->update($id, $request);
+            $socialAssistance = $this->socialAssistanceRepository->getById($id);
+
+            if (!$socialAssistance) {
+                return ResponseHelper::jsonResponse(
+                    false,
+                    'Data bantuan sosial tidak ditemukan',
+                    null,
+                    404
+                );
+            }
+
+            $socialAssistance = $this->socialAssistanceRepository->update($id, $request);
 
             return ResponseHelper::jsonResponse(
                 true,
-                'Data Kepala Keluarga Berhasil Diupdate',
-                new HeadOfFamilyResource($headOfFamilies),
+                'Berhasil memperbarui data bantuan sosial',
+                new SocialAssistanceResource($socialAssistance),
                 200
             );
         } catch (\Exception $e) {
@@ -177,19 +189,30 @@ class HeadOfFamilyController extends Controller
     }
 
     /**
-     * Remove the specified head of family from storage.
+     * Remove the specified social assistance from storage.
      * @param string $id
      * @return JsonResponse
      */
     public function destroy(string $id): JsonResponse
     {
         try {
-            $headOfFamilies = $this->headOfFamilyRepository->destroy($id);
+            $socialAssistance = $this->socialAssistanceRepository->getById($id);
+
+            if (!$socialAssistance) {
+                return ResponseHelper::jsonResponse(
+                    false,
+                    'Data bantuan sosial tidak ditemukan',
+                    null,
+                    404
+                );
+            }
+
+            $this->socialAssistanceRepository->destroy($id);
 
             return ResponseHelper::jsonResponse(
                 true,
-                'Data Kepala Keluarga Berhasil Dihapus',
-                new HeadOfFamilyResource($headOfFamilies),
+                'Berhasil menghapus data bantuan sosial',
+                new SocialAssistanceResource($socialAssistance),
                 200
             );
         } catch (\Exception $e) {

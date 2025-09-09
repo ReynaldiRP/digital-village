@@ -184,12 +184,12 @@ class FamilyMemberController extends Controller
     public function destroy(string $id): JsonResponse
     {
         try {
-            $deleted = $this->familyMemberRepository->destroy($id);
+            $familyMember = $this->familyMemberRepository->destroy($id);
 
             return ResponseHelper::jsonResponse(
                 true,
                 'Berhasil menghapus anggota keluarga',
-                null,
+                new FamilyMemberResource($familyMember),
                 200
             );
         } catch (\Exception $e) {
