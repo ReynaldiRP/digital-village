@@ -158,6 +158,17 @@ class UserController extends Controller
         $request = $request->validated();
 
         try {
+            $user = $this->userRepository->getById($id);
+
+            if (!$user) {
+                return ResponseHelper::jsonResponse(
+                    false,
+                    'Data User Tidak Ditemukan',
+                    null,
+                    404
+                );
+            }
+
             $user = $this->userRepository->update($id, $request);
 
             return ResponseHelper::jsonResponse(
@@ -184,6 +195,17 @@ class UserController extends Controller
     public function destroy(string $id): JsonResponse
     {
         try {
+            $user = $this->userRepository->getById($id);
+
+            if (!$user) {
+                return ResponseHelper::jsonResponse(
+                    false,
+                    'Data User Tidak Ditemukan',
+                    null,
+                    404
+                );
+            }
+
             $this->userRepository->destroy($id);
 
             return ResponseHelper::jsonResponse(

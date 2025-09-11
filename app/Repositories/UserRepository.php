@@ -83,10 +83,11 @@ class UserRepository implements UserRepositoryInterface
         DB::beginTransaction();
 
         try {
-            $user = User::findOrFail($id);
+            $user = User::find($id);
 
             $user->name = $data['name'] ?? $user->name;
             $user->email = $data['email'] ?? $user->email;
+            $user->password = $data['password'] ?? $user->password;
 
             if (isset($data['password'])) {
                 $user->password = bcrypt($data['password']);
