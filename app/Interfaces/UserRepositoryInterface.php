@@ -28,7 +28,7 @@ interface UserRepositoryInterface
         array $data
     );
 
-    public function destroy(
+    public function delete(
         string $id
     );
 }

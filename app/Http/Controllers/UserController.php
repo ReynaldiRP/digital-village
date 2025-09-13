@@ -206,7 +206,7 @@ class UserController extends Controller
                 );
             }
 
-            $this->userRepository->destroy($id);
+            $this->userRepository->delete($id);
 
             return ResponseHelper::jsonResponse(
                 true,

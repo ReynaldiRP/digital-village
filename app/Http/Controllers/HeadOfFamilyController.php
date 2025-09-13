@@ -184,7 +184,7 @@ class HeadOfFamilyController extends Controller
     public function destroy(string $id): JsonResponse
     {
         try {
-            $headOfFamilies = $this->headOfFamilyRepository->destroy($id);
+            $headOfFamilies = $this->headOfFamilyRepository->delete($id);
 
             return ResponseHelper::jsonResponse(
                 true,

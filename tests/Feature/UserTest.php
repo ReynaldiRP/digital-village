@@ -309,6 +309,7 @@ class UserTest extends TestCase
 
         $response = $this->deleteJson("/api/users/{$user->id}");
         $response->assertStatus(204);
+        $this->assertSoftDeleted('users', ['id' => $user->id]);
     }
 
     public function test_delete_user_data_with_non_existent_id(): void

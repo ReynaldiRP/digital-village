@@ -184,7 +184,7 @@ class FamilyMemberController extends Controller
     public function destroy(string $id): JsonResponse
     {
         try {
-            $familyMember = $this->familyMemberRepository->destroy($id);
+            $familyMember = $this->familyMemberRepository->delete($id);
 
             return ResponseHelper::jsonResponse(
                 true,

@@ -64,7 +64,7 @@ class SocialAssistanceRepository implements SocialAssistanceRepositoryInterface
         try {
             $socialAssistance = new SocialAssistance();
 
-            $socialAssistance->thumbnail = $data['thumbnail'];
+            $socialAssistance->thumbnail = $data['thumbnail']->store('social-assistances', 'public');
             $socialAssistance->name = $data['name'];
             $socialAssistance->category = $data['category'];
             $socialAssistance->amount = $data['amount'];
@@ -95,7 +95,10 @@ class SocialAssistanceRepository implements SocialAssistanceRepositoryInterface
                 throw new Exception('Data not found');
             }
 
-            $socialAssistance->thumbnail = $data['thumbnail'] ?? $socialAssistance->thumbnail;
+            if (isset($data['thumbnail'])) {
+                $socialAssistance->thumbnail = $data['thumbnail']->store('social-assistances', 'public');
+            }
+
             $socialAssistance->name = $data['name'] ?? $socialAssistance->name;
             $socialAssistance->category = $data['category'] ?? $socialAssistance->category;
             $socialAssistance->amount = $data['amount'] ?? $socialAssistance->amount;
@@ -113,7 +116,7 @@ class SocialAssistanceRepository implements SocialAssistanceRepositoryInterface
         }
     }
 
-    public function destroy(
+    public function delete(
         string $id
     ) {
         DB::beginTransaction();

@@ -104,7 +104,7 @@ class UserRepository implements UserRepositoryInterface
         }
     }
 
-    public function destroy(
+    public function delete(
         string $id
     ) {
         DB::beginTransaction();

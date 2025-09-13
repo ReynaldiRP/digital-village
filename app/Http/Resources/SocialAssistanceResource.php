@@ -23,6 +23,7 @@ class SocialAssistanceResource extends JsonResource
             'provider' => $this->provider,
             'description' => $this->description,
             'is_available' => $this->is_available,
+            'recipients' => SocialAssistanceRecipientResource::collection($this->whenLoaded('socialAssistanceRecipients')),
         ];
     }
 }

@@ -2,8 +2,7 @@
 
 namespace App\Interfaces;
 
-
-interface SocialAssistanceRepositoryInterface
+interface SocialAssistanceRecipientRepositoryInterface
 {
     public function getAll(
         ?string $search,

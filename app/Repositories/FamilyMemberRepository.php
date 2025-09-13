@@ -75,7 +75,7 @@ class FamilyMemberRepository implements FamilyMemberRepositoryInterface
             $familyMember = new FamilyMember();
             $familyMember->head_of_family_id = $data['head_of_family_id'];
             $familyMember->user_id = $user->id;
-            $familyMember->profile_picture = $data['profile_picture'];
+            $familyMember->profile_picture = $data['profile_picture']->store('family_members', 'public');
             $familyMember->identify_number = $data['identify_number'];
             $familyMember->gender = $data['gender'];
             $familyMember->birth_date = $data['birth_date'];
@@ -108,9 +108,12 @@ class FamilyMemberRepository implements FamilyMemberRepositoryInterface
                 throw new Exception('Anggota keluarga tidak ditemukan');
             }
 
+            if (isset($data['profile_picture'])) {
+                $familyMember->profile_picture = $data['profile_picture']->store('family_members', 'public');
+            }
+
             $familyMember->head_of_family_id = $data['head_of_family_id'] ?? $familyMember->head_of_family_id;
             $familyMember->user_id = $data['user_id'] ?? $familyMember->user_id;
-            $familyMember->profile_picture = $data['profile_picture'] ?? $familyMember->profile_picture;
             $familyMember->identify_number = $data['identify_number'] ?? $familyMember->identify_number;
             $familyMember->gender = $data['gender'] ?? $familyMember->gender;
             $familyMember->birth_date = $data['birth_date'] ?? $familyMember->birth_date;
@@ -130,7 +133,7 @@ class FamilyMemberRepository implements FamilyMemberRepositoryInterface
         }
     }
 
-    public function destroy(
+    public function delete(
         string $id
     ) {
         DB::beginTransaction();

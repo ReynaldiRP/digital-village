@@ -17,8 +17,6 @@ class FamilyMemberFactory extends Factory
     public function definition(): array
     {
         return [
-            'head_of_family_id' => \App\Models\HeadOfFamily::pluck('id')->random(),
-            'user_id' => \App\Models\User::pluck('id')->random(),
             'profile_picture' => $this->faker->imageUrl(640, 480, 'people', true),
             'identify_number' => $this->faker->unique()->numerify('##########'),
             'gender' => $this->faker->randomElement(['male', 'female']),

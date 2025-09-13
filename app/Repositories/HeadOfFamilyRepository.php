@@ -21,7 +21,7 @@ class HeadOfFamilyRepository implements HeadOfFamilyRepositoryInterface
             }
         });
 
-        $query->latest();
+        $query->with('familyMembers')->latest();
 
         // Apply limit if provided
         if ($limit) {
@@ -115,7 +115,7 @@ class HeadOfFamilyRepository implements HeadOfFamilyRepositoryInterface
         }
     }
 
-    public function destroy(
+    public function delete(
         string $id
     ) {
         DB::beginTransaction();

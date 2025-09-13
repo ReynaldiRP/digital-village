@@ -2,9 +2,9 @@
 
 namespace Database\Seeders;
 
-use App\Models\SocialAssistance;
+use App\Models\HeadOfFamily;
 use Database\Factories\SocialAssistanceFactory;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Database\Factories\SocialAssistanceRecipientFactory;
 use Illuminate\Database\Seeder;
 
 class SocialAssistanceSeeder extends Seeder
@@ -14,6 +14,13 @@ class SocialAssistanceSeeder extends Seeder
      */
     public function run(): void
     {
-        SocialAssistanceFactory::new()->count(5)->create();
+        $headOfFamily = HeadOfFamily::pluck('id')->toArray();
+
+        SocialAssistanceFactory::new()->count(5)->create()->each(function ($socialAssistance) use ($headOfFamily) {
+            SocialAssistanceRecipientFactory::new()->count(10)->create([
+                'social_assistance_id' => $socialAssistance->id,
+                'head_of_family_id' => $headOfFamily[array_rand($headOfFamily)],
+            ]);
+        });
     }
 }

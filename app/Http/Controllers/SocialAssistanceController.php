@@ -207,7 +207,7 @@ class SocialAssistanceController extends Controller
                 );
             }
 
-            $this->socialAssistanceRepository->destroy($id);
+            $this->socialAssistanceRepository->delete($id);
 
             return ResponseHelper::jsonResponse(
                 true,
