@@ -3,9 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\ResponseHelper;
+use App\Http\Requests\SocialAssistanceRecipients\SocialAssistanceRecipientStoreRequest;
+use App\Http\Requests\SocialAssistanceRecipients\SocialAssistanceRecipientUpdateRequest;
 use App\Http\Resources\PaginatedResource;
 use App\Http\Resources\SocialAssistanceRecipientResource;
+use App\Http\Resources\SocialAssistanceResource;
 use App\Interfaces\SocialAssistanceRecipientRepositoryInterface;
+use App\Models\SocialAssistanceRecipient;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -84,34 +88,141 @@ class SocialAssistanceRecipientController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Store a newly created social assistance recipient in storage.
+     * @param SocialAssistanceRecipientStoreRequest $request
+     * @return JsonResponse
      */
-    public function store(Request $request)
+    public function store(SocialAssistanceRecipientStoreRequest $request): JsonResponse
     {
-        //
+        $request = $request->validated();
+
+        try {
+            $socialAssistanceRecipient = $this->socialAssistanceRecipientRepository->create($request);
+
+            return ResponseHelper::jsonResponse(
+                true,
+                'Data Penerima Bantuan Berhasil Ditambahkan',
+                new SocialAssistanceRecipientResource($socialAssistanceRecipient),
+                201
+            );
+        } catch (\Exception $e) {
+            return ResponseHelper::jsonResponse(
+                false,
+                $e->getMessage(),
+                null,
+                500
+            );
+        }
     }
 
     /**
-     * Display the specified resource.
+     * Display the specified social assistance recipient.
+     * @param string $id
+     * @return JsonResponse
      */
-    public function show(string $id)
+    public function show(string $id): JsonResponse
     {
-        //
+        try {
+            $socialAssistanceRecipient = $this->socialAssistanceRecipientRepository->getById($id);
+
+            if (!$socialAssistanceRecipient) {
+                return ResponseHelper::jsonResponse(
+                    true,
+                    'Data Penerima Bantuan tidak ditemukan',
+                    null,
+                    404
+                );
+            }
+
+            return ResponseHelper::jsonResponse(
+                true,
+                'Data Penerima Bantuan Berhasil Diambil',
+                new SocialAssistanceRecipientResource($socialAssistanceRecipient),
+                200
+            );
+        } catch (\Exception $e) {
+            return ResponseHelper::jsonResponse(
+                false,
+                $e->getMessage(),
+                null,
+                500
+            );
+        }
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update the specified social assistance recipient in storage.
+     * @param SocialAssistanceRecipientUpdateRequest $request
+     * @param string $id
      */
-    public function update(Request $request, string $id)
+    public function update(SocialAssistanceRecipientUpdateRequest $request, string $id): JsonResponse
     {
-        //
+        $request = $request->validated();
+
+        try {
+            $socialAssistanceRecipient = $this->socialAssistanceRecipientRepository->getById($id);
+
+            if (!$socialAssistanceRecipient) {
+                return ResponseHelper::jsonResponse(
+                    false,
+                    'Data Penerima Bantuan tidak ditemukan',
+                    null,
+                    404
+                );
+            }
+
+            $socialAssistanceRecipient = $this->socialAssistanceRecipientRepository->update($id, $request);
+
+            return ResponseHelper::jsonResponse(
+                true,
+                'Data Penerima Bantuan Berhasil Diupdate',
+                new SocialAssistanceRecipientResource($socialAssistanceRecipient),
+                200
+            );
+        } catch (\Exception $e) {
+            return ResponseHelper::jsonResponse(
+                false,
+                $e->getMessage(),
+                null,
+                500
+            );
+        }
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Remove the specified social assistance recipient from storage.
+     * @param string $id
+     * @return JsonResponse
      */
-    public function destroy(string $id)
+    public function destroy(string $id): JsonResponse
     {
-        //
+        try {
+            $socialAssistanceRecipient = $this->socialAssistanceRecipientRepository->getById($id);
+
+            if (!$socialAssistanceRecipient) {
+                return ResponseHelper::jsonResponse(
+                    false,
+                    'Data Penerima Bantuan tidak ditemukan',
+                    null,
+                    404
+                );
+            }
+
+            $this->socialAssistanceRecipientRepository->delete($id);
+
+            return ResponseHelper::jsonResponse(
+                true,
+                'Data Penerima Bantuan Berhasil Dihapus',
+                null,
+                200
+            );
+        } catch (\Exception $e) {
+            return ResponseHelper::jsonResponse(
+                false,
+                $e->getMessage(),
+                null,
+                500
+            );
+        }
     }
 }

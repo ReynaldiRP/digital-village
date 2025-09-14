@@ -110,7 +110,7 @@ class UserRepository implements UserRepositoryInterface
         DB::beginTransaction();
 
         try {
-            $user = User::findOrFail($id);
+            $user = User::find($id);
             $user->delete();
 
             DB::commit();

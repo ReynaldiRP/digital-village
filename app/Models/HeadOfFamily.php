@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Traits\UUID;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -10,7 +11,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class HeadOfFamily extends Model
 {
-    use SoftDeletes, UUID;
+    use SoftDeletes, UUID, HasFactory;
 
     protected $fillable = [
         'user_id',

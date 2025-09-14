@@ -89,11 +89,7 @@ class SocialAssistanceRepository implements SocialAssistanceRepositoryInterface
         DB::beginTransaction();
 
         try {
-            $socialAssistance = $this->getById($id);
-
-            if (!$socialAssistance) {
-                throw new Exception('Data not found');
-            }
+            $socialAssistance = SocialAssistance::find($id);
 
             if (isset($data['thumbnail'])) {
                 $socialAssistance->thumbnail = $data['thumbnail']->store('social-assistances', 'public');
@@ -122,11 +118,7 @@ class SocialAssistanceRepository implements SocialAssistanceRepositoryInterface
         DB::beginTransaction();
 
         try {
-            $socialAssistance = $this->getById($id);
-
-            if (!$socialAssistance) {
-                throw new Exception('Data not found');
-            }
+            $socialAssistance = SocialAssistance::find($id);
 
             $socialAssistance->delete();
 

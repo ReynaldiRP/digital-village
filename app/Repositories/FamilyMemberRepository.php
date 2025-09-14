@@ -102,11 +102,7 @@ class FamilyMemberRepository implements FamilyMemberRepositoryInterface
         DB::beginTransaction();
 
         try {
-            $familyMember = $this->getById($id);
-
-            if (!$familyMember) {
-                throw new Exception('Anggota keluarga tidak ditemukan');
-            }
+            $familyMember = FamilyMember::find($id);
 
             if (isset($data['profile_picture'])) {
                 $familyMember->profile_picture = $data['profile_picture']->store('family_members', 'public');

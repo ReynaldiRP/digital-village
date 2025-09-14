@@ -89,7 +89,7 @@ class HeadOfFamilyRepository implements HeadOfFamilyRepositoryInterface
         DB::beginTransaction();
 
         try {
-            $headOfFamily = HeadOfFamily::findOrFail($id);
+            $headOfFamily = HeadOfFamily::find($id);
 
             $headOfFamily->user_id = $data['user_id'] ?? $headOfFamily->user_id;
 
@@ -121,7 +121,7 @@ class HeadOfFamilyRepository implements HeadOfFamilyRepositoryInterface
         DB::beginTransaction();
 
         try {
-            $headOfFamily = HeadOfFamily::findOrFail($id);
+            $headOfFamily = HeadOfFamily::find($id);
             $headOfFamily->delete();
 
             DB::commit();

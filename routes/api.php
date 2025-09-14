@@ -5,7 +5,6 @@ use App\Http\Controllers\HeadOfFamilyController;
 use App\Http\Controllers\SocialAssistanceController;
 use App\Http\Controllers\SocialAssistanceRecipientController;
 use App\Http\Controllers\UserController;
-use App\Models\SocialAssistance;
 use Illuminate\Support\Facades\Route;
 
 Route::apiResource('users', UserController::class);

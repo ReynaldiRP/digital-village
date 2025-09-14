@@ -16,7 +16,12 @@ class SocialAssistanceRecipientFactory extends Factory
      */
     public function definition(): array
     {
+        $socialAssistanceIds = \App\Models\SocialAssistance::pluck('id')->toArray();
+        $headOfFamilyIds = \App\Models\HeadOfFamily::pluck('id')->toArray();
+
         return [
+            'social_assistance_id' => $this->faker->randomElement($socialAssistanceIds),
+            'head_of_family_id' => $this->faker->randomElement($headOfFamilyIds),
             'amount' => $this->faker->numberBetween(100000, 1000000),
             'reason' => $this->faker->sentence(),
             'bank' => $this->faker->randomElement(['BRI', 'BNI', 'BCA', 'Mandiri']),
