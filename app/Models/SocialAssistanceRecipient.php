@@ -34,6 +34,10 @@ class SocialAssistanceRecipient extends Model
             $query->whereHas('user', function ($query) use ($search) {
                 $query->where('name', 'like', "%{$search}%");
             });
+        })->orWhereHas('socialAssistance', function ($query) use ($search) {
+            $query->where('name', 'like', "%{$search}%")
+                ->orWhere('category', 'like', "%{$search}%")
+                ->orWhere('provider', 'like', "%{$search}%");
         });
     }
 

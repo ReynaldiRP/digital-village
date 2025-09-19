@@ -3,41 +3,41 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\ResponseHelper;
-use App\Http\Requests\SocialAssistanceRecipients\SocialAssistanceRecipientStoreRequest;
-use App\Http\Requests\SocialAssistanceRecipients\SocialAssistanceRecipientUpdateRequest;
+use App\Http\Requests\Events\EventStoreRequest;
+use App\Http\Requests\Events\EventUpdateRequest;
+use App\Http\Resources\EventResource;
 use App\Http\Resources\PaginatedResource;
-use App\Http\Resources\SocialAssistanceRecipientResource;
-use App\Interfaces\SocialAssistanceRecipientRepositoryInterface;
+use App\Interfaces\EventRepositoryInterface;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
-class SocialAssistanceRecipientController extends Controller
+class EventController extends Controller
 {
-    private SocialAssistanceRecipientRepositoryInterface $socialAssistanceRecipientRepository;
+    private EventRepositoryInterface $eventRepository;
 
-    public function __construct(SocialAssistanceRecipientRepositoryInterface $socialAssistanceRecipientRepository)
+    public function __construct(EventRepositoryInterface $eventRepository)
     {
-        $this->socialAssistanceRecipientRepository = $socialAssistanceRecipientRepository;
+        $this->eventRepository = $eventRepository;
     }
 
     /**
-     * Display a listing of the social assistance recipient.
+     * Display a listing of the events.
      * @param Request $request
      * @return JsonResponse
      */
     public function index(Request $request): JsonResponse
     {
         try {
-            $socialAssistanceRecipients = $this->socialAssistanceRecipientRepository->getAll(
-                $request->search,
-                $request->limit,
+            $events = $this->eventRepository->getAll(
+                $request->input('search'),
+                $request->input('limit'),
                 true
             );
 
             return ResponseHelper::jsonResponse(
                 true,
-                'Data Penerima Bantuan berhasil diambil',
-                SocialAssistanceRecipientResource::collection($socialAssistanceRecipients),
+                'Data Events berhasil diambil',
+                EventResource::collection($events),
                 200
             );
         } catch (\Exception $e) {
@@ -51,7 +51,7 @@ class SocialAssistanceRecipientController extends Controller
     }
 
     /**
-     * Get all social assistance recipient paginated.
+     * Get all events paginated.
      * @param Request $request
      * @return JsonResponse
      */
@@ -64,15 +64,15 @@ class SocialAssistanceRecipientController extends Controller
             ]);
 
 
-            $socialAssistanceRecipients = $this->socialAssistanceRecipientRepository->getAllPaginated(
+            $events = $this->eventRepository->getAllPaginated(
                 $request['search'] ?? null,
                 $request['row_per_page']
             );
 
             return ResponseHelper::jsonResponse(
                 true,
-                'Data Penerima Bantuan Berhasil Diambil',
-                new PaginatedResource($socialAssistanceRecipients, SocialAssistanceRecipientResource::class),
+                'Data Event Berhasil Diambil',
+                new PaginatedResource($events, EventResource::class),
                 200
             );
         } catch (\Exception $e) {
@@ -86,21 +86,21 @@ class SocialAssistanceRecipientController extends Controller
     }
 
     /**
-     * Store a newly created social assistance recipient in storage.
-     * @param SocialAssistanceRecipientStoreRequest $request
+     * Store a newly created event in storage.
+     * @param EventStoreRequest $request
      * @return JsonResponse
      */
-    public function store(SocialAssistanceRecipientStoreRequest $request): JsonResponse
+    public function store(EventStoreRequest $request): JsonResponse
     {
         $request = $request->validated();
 
         try {
-            $socialAssistanceRecipient = $this->socialAssistanceRecipientRepository->create($request);
+            $event = $this->eventRepository->create($request);
 
             return ResponseHelper::jsonResponse(
                 true,
-                'Data Penerima Bantuan Berhasil Ditambahkan',
-                new SocialAssistanceRecipientResource($socialAssistanceRecipient),
+                'Event Berhasil Ditambahkan',
+                new EventResource($event),
                 201
             );
         } catch (\Exception $e) {
@@ -114,19 +114,19 @@ class SocialAssistanceRecipientController extends Controller
     }
 
     /**
-     * Display the specified social assistance recipient.
+     * Display the specified event.
      * @param string $id
      * @return JsonResponse
      */
     public function show(string $id): JsonResponse
     {
         try {
-            $socialAssistanceRecipient = $this->socialAssistanceRecipientRepository->getById($id);
+            $event = $this->eventRepository->getById($id);
 
-            if (!$socialAssistanceRecipient) {
+            if (!$event) {
                 return ResponseHelper::jsonResponse(
-                    true,
-                    'Data Penerima Bantuan tidak ditemukan',
+                    false,
+                    'Event tidak ditemukan',
                     null,
                     404
                 );
@@ -134,14 +134,14 @@ class SocialAssistanceRecipientController extends Controller
 
             return ResponseHelper::jsonResponse(
                 true,
-                'Data Penerima Bantuan Berhasil Diambil',
-                new SocialAssistanceRecipientResource($socialAssistanceRecipient),
+                'Data Event Berhasil Diambil',
+                new EventResource($event),
                 200
             );
-        } catch (\Exception $e) {
+        } catch (\Exception $th) {
             return ResponseHelper::jsonResponse(
                 false,
-                $e->getMessage(),
+                $th->getMessage(),
                 null,
                 500
             );
@@ -149,32 +149,33 @@ class SocialAssistanceRecipientController extends Controller
     }
 
     /**
-     * Update the specified social assistance recipient in storage.
-     * @param SocialAssistanceRecipientUpdateRequest $request
+     * Update the specified event in storage.
+     * @param EventUpdateRequest $request
      * @param string $id
+     * @return JsonResponse
      */
-    public function update(SocialAssistanceRecipientUpdateRequest $request, string $id): JsonResponse
+    public function update(EventUpdateRequest $request, string $id): JsonResponse
     {
         $request = $request->validated();
 
         try {
-            $socialAssistanceRecipient = $this->socialAssistanceRecipientRepository->getById($id);
+            $event = $this->eventRepository->getById($id);
 
-            if (!$socialAssistanceRecipient) {
+            if (!$event) {
                 return ResponseHelper::jsonResponse(
                     false,
-                    'Data Penerima Bantuan tidak ditemukan',
+                    'Event tidak ditemukan',
                     null,
                     404
                 );
             }
 
-            $socialAssistanceRecipient = $this->socialAssistanceRecipientRepository->update($id, $request);
+            $event = $this->eventRepository->update($id, $request);
 
             return ResponseHelper::jsonResponse(
                 true,
-                'Data Penerima Bantuan Berhasil Diupdate',
-                new SocialAssistanceRecipientResource($socialAssistanceRecipient),
+                'Event Berhasil Diupdate',
+                new EventResource($event),
                 200
             );
         } catch (\Exception $e) {
@@ -188,29 +189,29 @@ class SocialAssistanceRecipientController extends Controller
     }
 
     /**
-     * Remove the specified social assistance recipient from storage.
+     * Remove the specified event from storage.
      * @param string $id
      * @return JsonResponse
      */
     public function destroy(string $id): JsonResponse
     {
         try {
-            $socialAssistanceRecipient = $this->socialAssistanceRecipientRepository->getById($id);
+            $event = $this->eventRepository->getById($id);
 
-            if (!$socialAssistanceRecipient) {
+            if (!$event) {
                 return ResponseHelper::jsonResponse(
                     false,
-                    'Data Penerima Bantuan tidak ditemukan',
+                    'Event tidak ditemukan',
                     null,
                     404
                 );
             }
 
-            $this->socialAssistanceRecipientRepository->delete($id);
+            $this->eventRepository->delete($id);
 
             return ResponseHelper::jsonResponse(
                 true,
-                'Data Penerima Bantuan Berhasil Dihapus',
+                'Event Berhasil Dihapus',
                 null,
                 200
             );
