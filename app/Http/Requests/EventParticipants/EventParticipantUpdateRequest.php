@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\Events;
+namespace App\Http\Requests\EventParticipants;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class EventStoreRequest extends FormRequest
+class EventParticipantUpdateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,43 +22,34 @@ class EventStoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'thumbnail' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'name' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'price' => 'required|numeric|min:0',
-            'date' => 'required|date',
-            'time' => 'required',
-            'is_active' => 'required|boolean',
+            'event_id' => 'sometimes|exists:events,id',
+            'head_of_family_id' => 'sometimes|exists:head_of_families,id',
+            'quantity' => 'sometimes|integer|min:1',
+            'total_price' => 'sometimes|numeric|min:0',
+            'payment_status' => 'sometimes|in:pending,completed,failed',
         ];
     }
 
     public function attributes()
     {
         return [
-            'thumbnail' => 'thumbnail',
-            'name' => 'nama',
-            'description' => 'deskripsi',
-            'price' => 'harga',
-            'date' => 'tanggal',
-            'time' => 'waktu',
-            'is_active' => 'status aktif',
+            'event_id' => 'Event',
+            'head_of_family_id' => 'Kepala Keluarga',
+            'quantity' => 'Kuantitas',
+            'total_price' => 'Total Harga',
+            'payment_status' => 'Status Pembayaran',
         ];
     }
 
     public function messages()
     {
         return [
-            'event_id.required' => 'Field :attribute wajib diisi.',
             'event_id.exists' => ':attribute yang dipilih tidak valid.',
-            'head_of_family_id.required' => 'Field :attribute wajib diisi.',
             'head_of_family_id.exists' => ':attribute yang dipilih tidak valid.',
-            'quantity.required' => 'Field :attribute wajib diisi.',
             'quantity.integer' => ':attribute harus berupa angka bulat.',
             'quantity.min' => ':attribute minimal harus :min.',
-            'total_price.required' => 'Field :attribute wajib diisi.',
             'total_price.numeric' => ':attribute harus berupa angka.',
             'total_price.min' => ':attribute minimal harus :min.',
-            'payment_status.required' => 'Field :attribute wajib diisi.',
             'payment_status.in' => ':attribute yang dipilih tidak valid. Nilai yang diizinkan: pending, completed, failed.',
         ];
     }
