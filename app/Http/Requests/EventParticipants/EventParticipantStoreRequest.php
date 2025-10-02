@@ -25,7 +25,6 @@ class EventParticipantStoreRequest extends FormRequest
             'event_id' => 'required|exists:events,id',
             'head_of_family_id' => 'required|exists:head_of_families,id',
             'quantity' => 'required|integer|min:1',
-            'total_price' => 'required|numeric|min:0',
             'payment_status' => 'required|in:pending,completed,failed',
         ];
     }
@@ -36,7 +35,6 @@ class EventParticipantStoreRequest extends FormRequest
             'event_id' => 'Event',
             'head_of_family_id' => 'Kepala Keluarga',
             'quantity' => 'Kuantitas',
-            'total_price' => 'Total Harga',
             'payment_status' => 'Status Pembayaran',
         ];
     }
@@ -51,9 +49,6 @@ class EventParticipantStoreRequest extends FormRequest
             'quantity.required' => 'The :attribute field is required.',
             'quantity.integer' => 'The :attribute must be an integer.',
             'quantity.min' => 'The :attribute must be at least :min.',
-            'total_price.required' => 'The :attribute field is required.',
-            'total_price.numeric' => 'The :attribute must be a number.',
-            'total_price.min' => 'The :attribute must be at least :min.',
             'payment_status.required' => 'The :attribute field is required.',
             'payment_status.in' => 'The selected :attribute is invalid. Allowed values are: pending, completed, failed.',
         ];

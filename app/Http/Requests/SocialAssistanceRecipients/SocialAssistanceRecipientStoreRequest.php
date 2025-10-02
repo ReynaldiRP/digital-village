@@ -28,7 +28,7 @@ class SocialAssistanceRecipientStoreRequest extends FormRequest
             'reason' => 'required|string|max:1000',
             'bank' => 'required|string|max:255',
             'account_number' => 'required|string|max:50',
-            'proof' => 'nullable|image|max:2048',
+            'proof' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'status' => 'required|string|in:pending,approved,rejected',
         ];
     }

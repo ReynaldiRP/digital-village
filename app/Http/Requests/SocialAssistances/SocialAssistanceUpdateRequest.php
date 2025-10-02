@@ -22,7 +22,7 @@ class SocialAssistanceUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'thumbnail' => 'sometimes|image|max:2048',
+            'thumbnail' => 'sometimes|image|mimes:jpeg,png,jpg,gif|max:2048',
             'name' => 'sometimes|string|max:255',
             'category' => 'sometimes|string|in:cash,staple,subsidized,fuel,health',
             'amount' => 'sometimes|numeric|min:0',

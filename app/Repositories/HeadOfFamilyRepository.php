@@ -6,6 +6,7 @@ use App\Interfaces\HeadOfFamilyRepositoryInterface;
 use App\Models\HeadOfFamily;
 use Exception;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class HeadOfFamilyRepository implements HeadOfFamilyRepositoryInterface
 {
@@ -91,12 +92,17 @@ class HeadOfFamilyRepository implements HeadOfFamilyRepositoryInterface
         try {
             $headOfFamily = HeadOfFamily::find($id);
 
-            $headOfFamily->user_id = $data['user_id'] ?? $headOfFamily->user_id;
-
             if (isset($data['profile_picture'])) {
+                $oldProfilePicture = $headOfFamily->profile_picture;
+
                 $headOfFamily->profile_picture = $data['profile_picture']->store('assets/head-of-families', 'public');
+
+                if ($oldProfilePicture && Storage::disk('public')->exists($oldProfilePicture)) {
+                    Storage::disk('public')->delete($oldProfilePicture);
+                }
             }
 
+            $headOfFamily->user_id = $data['user_id'] ?? $headOfFamily->user_id;
             $headOfFamily->identify_number = $data['identify_number'] ?? $headOfFamily->identify_number;
             $headOfFamily->gender = $data['gender'] ?? $headOfFamily->gender;
             $headOfFamily->birth_date = $data['birth_date'] ?? $headOfFamily->birth_date;

@@ -2,12 +2,12 @@
 
 namespace App\Repositories;
 
-use App\Interfaces\EventRepositoryInterface;
-use App\Models\Event;
+use App\Interfaces\DevelopmentRepositoryInterface;
+use App\Models\Development;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
-class EventRepository implements EventRepositoryInterface
+class DevelopmentRepository implements DevelopmentRepositoryInterface
 {
     public function getAll(
         ?string $search,
@@ -15,7 +15,7 @@ class EventRepository implements EventRepositoryInterface
         bool $execute
     ) {
         try {
-            $query = Event::where(function ($query) use ($search) {
+            $query = Development::where(function ($query) use ($search) {
                 if ($search) {
                     $query->search($search);
                 }
@@ -31,7 +31,7 @@ class EventRepository implements EventRepositoryInterface
 
             return $query;
         } catch (\Exception $e) {
-            throw new \Exception($e->getMessage());
+            return throw new \Exception($e->getMessage());
         }
     }
 
@@ -55,30 +55,32 @@ class EventRepository implements EventRepositoryInterface
     public function getById(
         string $id
     ) {
-        $query = Event::where('id', $id);
-
-        return $query->first();
+        try {
+            $query = Development::where('id', $id);
+            return $query->first();
+        } catch (\Exception $e) {
+            throw new \Exception($e->getMessage());
+        }
     }
 
     public function create(
         array $data
     ) {
         DB::beginTransaction();
-
         try {
-            $event = new Event();
-            $event->thumbnail = $data['thumbnail'];
-            $event->name = $data['name'];
-            $event->description = $data['description'];
-            $event->price = $data['price'];
-            $event->date = $data['date'];
-            $event->time = $data['time'];
-            $event->is_active = $data['is_active'];
-
-            $event->save();
+            $development = new Development();
+            $development->thumbnail = $data['thumbnail'];
+            $development->name = $data['name'];
+            $development->description = $data['description'];
+            $development->person_in_charge = $data['person_in_charge'];
+            $development->start_date = $data['start_date'];
+            $development->end_date = $data['end_date'];
+            $development->amount = $data['amount'];
+            $development->status = $data['status'];
+            $development->save();
             DB::commit();
 
-            return $event;
+            return $development;
         } catch (\Exception $e) {
             DB::rollBack();
             throw new \Exception($e->getMessage());
@@ -90,28 +92,27 @@ class EventRepository implements EventRepositoryInterface
         array $data
     ) {
         DB::beginTransaction();
-
         try {
-            $event = Event::find($id);
+            $development = Development::find($id);
 
             if (isset($data['thumbnail'])) {
-                $oldThumbnail = $event->thumbnail;
-                $event->thumbnail = $data['thumbnail'];
+                $oldThumbnail = $development->thumbnail;
+                $development->thumbnail = $data['thumbnail'];
                 if ($oldThumbnail && Storage::disk('public')->exists($oldThumbnail)) {
                     Storage::disk('public')->delete($oldThumbnail);
                 }
             }
-            $event->name = $data['name'] ?? $event->name;
-            $event->description = $data['description'] ?? $event->description;
-            $event->price = $data['price'] ?? $event->price;
-            $event->date = $data['date'] ?? $event->date;
-            $event->time = $data['time'] ?? $event->time;
-            $event->is_active = $data['is_active'] ?? $event->is_active;
-            $event->save();
-
+            $development->name = $data['name'] ?? $development->name;
+            $development->description = $data['description'] ?? $development->description;
+            $development->person_in_charge = $data['person_in_charge'] ?? $development->person_in_charge;
+            $development->start_date = $data['start_date'] ?? $development->start_date;
+            $development->end_date = $data['end_date'] ?? $development->end_date;
+            $development->amount = $data['amount'] ?? $development->amount;
+            $development->status = $data['status'] ?? $development->status;
+            $development->save();
             DB::commit();
 
-            return $event;
+            return $development;
         } catch (\Exception $e) {
             DB::rollBack();
             throw new \Exception($e->getMessage());
@@ -122,12 +123,13 @@ class EventRepository implements EventRepositoryInterface
         string $id
     ) {
         DB::beginTransaction();
-
         try {
-            $event = Event::find($id);
-            $event->delete();
+            $development = Development::find($id);
 
+            $development->delete();
             DB::commit();
+
+            return true;
         } catch (\Exception $e) {
             DB::rollBack();
             throw new \Exception($e->getMessage());

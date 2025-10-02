@@ -15,6 +15,7 @@ class EventParticipantResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
+            'id' => $this->id,
             'event' => new EventResource($this->event),
             'head_of_family' => new HeadOfFamilyResource($this->headOfFamily),
             'quantity' => $this->quantity,

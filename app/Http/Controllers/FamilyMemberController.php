@@ -158,6 +158,17 @@ class FamilyMemberController extends Controller
         $request = $request->validated();
 
         try {
+            $familyMember = $this->familyMemberRepository->getById($id);
+
+            if (!$familyMember) {
+                return ResponseHelper::jsonResponse(
+                    false,
+                    'Data anggota keluarga tidak ditemukan',
+                    null,
+                    404
+                );
+            }
+
             $familyMember = $this->familyMemberRepository->update($id, $request);
 
             return ResponseHelper::jsonResponse(

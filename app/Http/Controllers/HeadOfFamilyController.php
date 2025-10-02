@@ -10,6 +10,7 @@ use App\Http\Resources\PaginatedResource;
 use App\Interfaces\HeadOfFamilyRepositoryInterface;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class HeadOfFamilyController extends Controller
 {
@@ -93,6 +94,7 @@ class HeadOfFamilyController extends Controller
     public function store(HeadOfFamilyStoreRequest $request): JsonResponse
     {
         $request = $request->validated();
+
         try {
             $headOfFamilies = $this->headOfFamilyRepository->create($request);
 
@@ -158,12 +160,23 @@ class HeadOfFamilyController extends Controller
         $request = $request->validated();
 
         try {
-            $headOfFamilies = $this->headOfFamilyRepository->update($id, $request);
+            $headOfFamily = $this->headOfFamilyRepository->getById($id);
+
+            if (!$headOfFamily) {
+                return ResponseHelper::jsonResponse(
+                    false,
+                    'Data Kepala Keluarga Tidak Ditemukan',
+                    null,
+                    404
+                );
+            }
+
+            $headOfFamily = $this->headOfFamilyRepository->update($id, $request);
 
             return ResponseHelper::jsonResponse(
                 true,
                 'Data Kepala Keluarga Berhasil Diupdate',
-                new HeadOfFamilyResource($headOfFamilies),
+                new HeadOfFamilyResource($headOfFamily),
                 200
             );
         } catch (\Exception $e) {
@@ -184,12 +197,23 @@ class HeadOfFamilyController extends Controller
     public function destroy(string $id): JsonResponse
     {
         try {
-            $headOfFamilies = $this->headOfFamilyRepository->delete($id);
+            $headOfFamily = $this->headOfFamilyRepository->getById($id);
+
+            if (!$headOfFamily) {
+                return ResponseHelper::jsonResponse(
+                    false,
+                    'Data Kepala Keluarga Tidak Ditemukan',
+                    null,
+                    404
+                );
+            }
+
+            $headOfFamily = $this->headOfFamilyRepository->delete($id);
 
             return ResponseHelper::jsonResponse(
                 true,
                 'Data Kepala Keluarga Berhasil Dihapus',
-                new HeadOfFamilyResource($headOfFamilies),
+                new HeadOfFamilyResource($headOfFamily),
                 200
             );
         } catch (\Exception $e) {

@@ -66,12 +66,14 @@ class EventParticipantRepository implements EventParticipantRepositoryInterface
         DB::beginTransaction();
 
         try {
+            $event = Event::where('id', $data['event_id'])->first();
+
             $eventParticipant = new EventParticipant();
 
             $eventParticipant->event_id = $data['event_id'];
             $eventParticipant->head_of_family_id = $data['head_of_family_id'];
             $eventParticipant->quantity = $data['quantity'];
-            $eventParticipant->total_price = $data['total_price'];
+            $eventParticipant->total_price = $event->price * $data['quantity'];
             $eventParticipant->payment_status = $data['payment_status'];
 
             $eventParticipant->save();
@@ -91,13 +93,15 @@ class EventParticipantRepository implements EventParticipantRepositoryInterface
         DB::beginTransaction();
 
         try {
+            $event = Event::where('id', $data['event_id'])->first();
+
             $eventParticipant = EventParticipant::find($id);
 
-            $eventParticipant->event_id = $data['event_id'];
-            $eventParticipant->head_of_family_id = $data['head_of_family_id'];
-            $eventParticipant->quantity = $data['quantity'];
-            $eventParticipant->total_price = $data['total_price'];
-            $eventParticipant->payment_status = $data['payment_status'];
+            $eventParticipant->event_id = $data['event_id'] ?? $eventParticipant->event_id;
+            $eventParticipant->head_of_family_id = $data['head_of_family_id'] ?? $eventParticipant->head_of_family_id;
+            $eventParticipant->quantity = $data['quantity'] ?? $eventParticipant->quantity;
+            $eventParticipant->total_price = $event->price *  $data['quantity']   ?? $eventParticipant->total_price;
+            $eventParticipant->payment_status = $data['payment_status'] ?? $eventParticipant->payment_status;
 
             $eventParticipant->save();
             DB::commit();

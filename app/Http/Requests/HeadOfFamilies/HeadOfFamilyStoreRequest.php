@@ -23,7 +23,7 @@ class HeadOfFamilyStoreRequest extends FormRequest
     {
         return [
             'user_id' => 'required|exists:users,id',
-            'profile_picture' => 'nullable|image|max:2048',
+            'profile_picture' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'identify_number' => 'required|string|max:255',
             'gender' => 'required|in:male,female',
             'birth_date' => 'required|date',

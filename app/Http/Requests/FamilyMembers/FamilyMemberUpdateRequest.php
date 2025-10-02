@@ -28,7 +28,7 @@ class FamilyMemberUpdateRequest extends FormRequest
                 'exists:users,id',
                 'unique:family_members,user_id,' . request()->route('family_member')
             ],
-            'profile_picture' => 'nullable|image|max:2048',
+            'profile_picture' => 'nullable|image|mimes:png,jpg,jpeg,gif|max:2048',
             'identify_number' => [
                 'sometimes',
                 'string',

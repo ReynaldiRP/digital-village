@@ -22,7 +22,7 @@ class SocialAssistanceStoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'thumbnail' => 'nullable|image|max:2048',
+            'thumbnail' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'name' => 'required|string|max:255',
             'category' => 'required|string|in:cash,staple,subsidized,fuel,health',
             'amount' => 'required|numeric|min:0',

@@ -7,6 +7,7 @@ use App\Models\SocialAssistance;
 use App\Models\SocialAssistanceRecipient;
 use Exception;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class SocialAssistanceRecipientRepository implements SocialAssistanceRecipientRepositoryInterface
 {
@@ -71,9 +72,8 @@ class SocialAssistanceRecipientRepository implements SocialAssistanceRecipientRe
             $socialAssistanceRecipient->reason = $data['reason'];
             $socialAssistanceRecipient->bank = $data['bank'];
             $socialAssistanceRecipient->account_number = $data['account_number'];
-            if (isset($data['proof'])) {
-                $socialAssistanceRecipient->proof = $data['proof']->store('social-assistance-recipients', 'public');
-            }
+            $socialAssistanceRecipient->proof = $data['proof']->store('assets/social-assistance-recipients', 'public');
+
             $socialAssistanceRecipient->status = $data['status'];
 
             $socialAssistanceRecipient->save();
@@ -96,15 +96,20 @@ class SocialAssistanceRecipientRepository implements SocialAssistanceRecipientRe
         try {
             $socialAssistanceRecipient = SocialAssistanceRecipient::find($id);
 
+            if (isset($data['proof'])) {
+                $oldProof = $socialAssistanceRecipient->proof;
+                $socialAssistanceRecipient->proof = $data['proof']->store('social-assistance-recipients', 'public');
+                if ($oldProof && Storage::disk('public')->exists($oldProof)) {
+                    Storage::disk('public')->delete($oldProof);
+                }
+            }
+
             $socialAssistanceRecipient->social_assistance_id = $data['social_assistance_id'] ?? $socialAssistanceRecipient->social_assistance_id;
             $socialAssistanceRecipient->head_of_family_id = $data['head_of_family_id'] ?? $socialAssistanceRecipient->head_of_family_id;
             $socialAssistanceRecipient->amount = $data['amount'] ?? $socialAssistanceRecipient->amount;
             $socialAssistanceRecipient->reason = $data['reason'] ?? $socialAssistanceRecipient->reason;
             $socialAssistanceRecipient->bank = $data['bank'] ?? $socialAssistanceRecipient->bank;
             $socialAssistanceRecipient->account_number = $data['account_number'] ?? $socialAssistanceRecipient->account_number;
-            if (isset($data['proof'])) {
-                $socialAssistanceRecipient->proof = $data['proof']->store('social-assistance-recipients', 'public');
-            }
             $socialAssistanceRecipient->status = $data['status'] ?? $socialAssistanceRecipient->status;
             $socialAssistanceRecipient->save();
 

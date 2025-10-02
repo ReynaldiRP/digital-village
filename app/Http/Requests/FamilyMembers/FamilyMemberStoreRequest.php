@@ -26,7 +26,7 @@ class FamilyMemberStoreRequest extends FormRequest
             'email' => 'required|email|max:100|unique:family_members,email',
             'password' => 'required|string|min:8',
             'head_of_family_id' => 'required|exists:head_of_families,id',
-            'profile_picture' => 'nullable|image|max:2048',
+            'profile_picture' => 'nullable|image|mimes:png,jpg,jpeg,gif|max:2048',
             'identify_number' => 'required|string|max:20|unique:family_members,identify_number',
             'gender' => 'required|string|in:male,female',
             'birth_date' => 'required|date',

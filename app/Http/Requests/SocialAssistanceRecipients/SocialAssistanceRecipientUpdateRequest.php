@@ -28,7 +28,7 @@ class SocialAssistanceRecipientUpdateRequest extends FormRequest
             'reason' => 'sometimes|string|max:1000',
             'bank' => 'sometimes|string|max:255',
             'account_number' => 'sometimes|string|max:50',
-            'proof' => 'nullable|image|max:2048',
+            'proof' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'status' => 'sometimes|string|in:pending,approved,rejected',
         ];
     }

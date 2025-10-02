@@ -20,7 +20,7 @@ return new class extends Migration
                 )->onDelete('cascade');
             $table->foreignUuid('head_of_family_id')
                 ->constrained(
-                    table: 'heads_of_families',
+                    table: 'head_of_families',
                     column: 'id'
                 )->onDelete('cascade');
             $table->integer('quantity');

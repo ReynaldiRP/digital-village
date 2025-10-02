@@ -22,6 +22,16 @@ class Development extends Model
         'status',
     ];
 
+    public function scopeSearch($query, $search)
+    {
+        return $query->where('name', 'like', '%' . $search . '%')
+            ->orWhere('description', 'like', '%' . $search . '%')
+            ->orWhere('person_in_charge', 'like', '%' . $search . '%')
+            ->orWhere('start_date', 'like', '%' . $search . '%')
+            ->orWhere('end_date', 'like', '%' . $search . '%')
+            ->orWhere('amount', 'like', '%' . $search . '%')
+            ->orWhere('status', 'like', '%' . $search . '%');
+    }
 
     public function developmentApplicants(): HasMany
     {

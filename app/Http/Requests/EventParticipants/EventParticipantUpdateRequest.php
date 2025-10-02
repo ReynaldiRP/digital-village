@@ -25,7 +25,6 @@ class EventParticipantUpdateRequest extends FormRequest
             'event_id' => 'sometimes|exists:events,id',
             'head_of_family_id' => 'sometimes|exists:head_of_families,id',
             'quantity' => 'sometimes|integer|min:1',
-            'total_price' => 'sometimes|numeric|min:0',
             'payment_status' => 'sometimes|in:pending,completed,failed',
         ];
     }
@@ -36,7 +35,6 @@ class EventParticipantUpdateRequest extends FormRequest
             'event_id' => 'Event',
             'head_of_family_id' => 'Kepala Keluarga',
             'quantity' => 'Kuantitas',
-            'total_price' => 'Total Harga',
             'payment_status' => 'Status Pembayaran',
         ];
     }
@@ -48,8 +46,6 @@ class EventParticipantUpdateRequest extends FormRequest
             'head_of_family_id.exists' => ':attribute yang dipilih tidak valid.',
             'quantity.integer' => ':attribute harus berupa angka bulat.',
             'quantity.min' => ':attribute minimal harus :min.',
-            'total_price.numeric' => ':attribute harus berupa angka.',
-            'total_price.min' => ':attribute minimal harus :min.',
             'payment_status.in' => ':attribute yang dipilih tidak valid. Nilai yang diizinkan: pending, completed, failed.',
         ];
     }

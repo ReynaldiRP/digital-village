@@ -6,6 +6,7 @@ use App\Interfaces\SocialAssistanceRepositoryInterface;
 use App\Models\SocialAssistance;
 use Exception;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class SocialAssistanceRepository implements SocialAssistanceRepositoryInterface
 {
@@ -64,7 +65,7 @@ class SocialAssistanceRepository implements SocialAssistanceRepositoryInterface
         try {
             $socialAssistance = new SocialAssistance();
 
-            $socialAssistance->thumbnail = $data['thumbnail']->store('social-assistances', 'public');
+            $socialAssistance->thumbnail = $data['thumbnail']->store('assets/social-assistances', 'public');
             $socialAssistance->name = $data['name'];
             $socialAssistance->category = $data['category'];
             $socialAssistance->amount = $data['amount'];
@@ -92,7 +93,13 @@ class SocialAssistanceRepository implements SocialAssistanceRepositoryInterface
             $socialAssistance = SocialAssistance::find($id);
 
             if (isset($data['thumbnail'])) {
-                $socialAssistance->thumbnail = $data['thumbnail']->store('social-assistances', 'public');
+                $oldThumbnail = $socialAssistance->thumbnail;
+
+                $socialAssistance->thumbnail = $data['thumbnail']->store('assets/social-assistances', 'public');
+
+                if ($oldThumbnail && Storage::disk('public')->exists($oldThumbnail)) {
+                    Storage::disk('public')->delete($oldThumbnail);
+                }
             }
 
             $socialAssistance->name = $data['name'] ?? $socialAssistance->name;
