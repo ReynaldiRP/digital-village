@@ -125,6 +125,9 @@ class EventRepository implements EventRepositoryInterface
 
         try {
             $event = Event::find($id);
+            if ($event->thumbnail && Storage::disk('public')->exists($event->thumbnail)) {
+                Storage::disk('public')->delete($event->thumbnail);
+            }
             $event->delete();
 
             DB::commit();

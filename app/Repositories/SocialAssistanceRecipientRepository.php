@@ -98,7 +98,7 @@ class SocialAssistanceRecipientRepository implements SocialAssistanceRecipientRe
 
             if (isset($data['proof'])) {
                 $oldProof = $socialAssistanceRecipient->proof;
-                $socialAssistanceRecipient->proof = $data['proof']->store('social-assistance-recipients', 'public');
+                $socialAssistanceRecipient->proof = $data['proof']->store('assets/social-assistance-recipients', 'public');
                 if ($oldProof && Storage::disk('public')->exists($oldProof)) {
                     Storage::disk('public')->delete($oldProof);
                 }
@@ -129,6 +129,11 @@ class SocialAssistanceRecipientRepository implements SocialAssistanceRecipientRe
 
         try {
             $socialAssistanceRecipient = SocialAssistanceRecipient::find($id);
+
+            if ($socialAssistanceRecipient->proof && Storage::disk('public')->exists($socialAssistanceRecipient->proof)) {
+                Storage::disk('public')->delete($socialAssistanceRecipient->proof);
+            }
+
             $socialAssistanceRecipient->delete();
 
             DB::commit();

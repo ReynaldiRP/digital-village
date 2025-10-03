@@ -18,7 +18,7 @@ return new class extends Migration
                 column: 'id'
             )->onDelete('cascade');
             $table->string('profile_picture')->nullable();
-            $table->integer('identify_number')->unique();
+            $table->integer('identify_number');
             $table->enum('gender', ['male', 'female']);
             $table->date('birth_date');
             $table->string('phone_number')->nullable();

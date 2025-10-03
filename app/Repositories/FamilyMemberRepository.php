@@ -144,8 +144,8 @@ class FamilyMemberRepository implements FamilyMemberRepositoryInterface
         try {
             $familyMember = $this->getById($id);
 
-            if (!$familyMember) {
-                throw new Exception('Anggota keluarga tidak ditemukan');
+            if ($familyMember->profile_picture && Storage::disk('public')->exists($familyMember->profile_picture)) {
+                Storage::disk('public')->delete($familyMember->profile_picture);
             }
 
             $familyMember->delete();

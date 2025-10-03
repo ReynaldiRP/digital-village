@@ -3,6 +3,7 @@
 namespace App\Http\Requests\HeadOfFamilies;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class HeadOfFamilyStoreRequest extends FormRequest
 {
@@ -24,7 +25,12 @@ class HeadOfFamilyStoreRequest extends FormRequest
         return [
             'user_id' => 'required|exists:users,id',
             'profile_picture' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'identify_number' => 'required|string|max:255',
+            'identify_number' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('head_of_families', 'identify_number')->whereNull('deleted_at')
+            ],
             'gender' => 'required|in:male,female',
             'birth_date' => 'required|date',
             'phone_number' => 'required|string|max:20',

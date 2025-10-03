@@ -127,6 +127,10 @@ class SocialAssistanceRepository implements SocialAssistanceRepositoryInterface
         try {
             $socialAssistance = SocialAssistance::find($id);
 
+            if ($socialAssistance->thumbnail && Storage::disk('public')->exists($socialAssistance->thumbnail)) {
+                Storage::disk('public')->delete($socialAssistance->thumbnail);
+            }
+
             $socialAssistance->delete();
 
             DB::commit();

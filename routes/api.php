@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\DevelopmentApplicantController;
+use App\Http\Controllers\DevelopmentController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\EventParticipantController;
 use App\Http\Controllers\FamilyMemberController;
@@ -11,7 +13,6 @@ use Illuminate\Support\Facades\Route;
 
 Route::apiResource('users', UserController::class);
 Route::get('users/all/paginated', [UserController::class, 'getAllPaginated']);
-
 
 Route::apiResource('head-of-families', HeadOfFamilyController::class);
 Route::get('head-of-families/all/paginated', [HeadOfFamilyController::class, 'getAllPaginated']);
@@ -30,3 +31,9 @@ Route::get('events/all/paginated', [EventController::class, 'getAllPaginated']);
 
 Route::apiResource('event-participants', EventParticipantController::class);
 Route::get('event-participants/all/paginated', [EventParticipantController::class, 'getAllPaginated']);
+
+Route::apiResource('developments', DevelopmentController::class);
+Route::get('developments/all/paginated', [DevelopmentController::class, 'getAllPaginated']);
+
+Route::apiResource('development-applicants', DevelopmentApplicantController::class);
+Route::get('development-applicants/all/paginated', [DevelopmentApplicantController::class, 'getAllPaginated']);

@@ -69,7 +69,7 @@ class DevelopmentRepository implements DevelopmentRepositoryInterface
         DB::beginTransaction();
         try {
             $development = new Development();
-            $development->thumbnail = $data['thumbnail'];
+            $development->thumbnail = $data['thumbnail']->store('assets/developments', 'public');
             $development->name = $data['name'];
             $development->description = $data['description'];
             $development->person_in_charge = $data['person_in_charge'];
@@ -92,12 +92,13 @@ class DevelopmentRepository implements DevelopmentRepositoryInterface
         array $data
     ) {
         DB::beginTransaction();
+
         try {
             $development = Development::find($id);
 
             if (isset($data['thumbnail'])) {
                 $oldThumbnail = $development->thumbnail;
-                $development->thumbnail = $data['thumbnail'];
+                $development->thumbnail = $data['thumbnail']->store('assets/developments', 'public');
                 if ($oldThumbnail && Storage::disk('public')->exists($oldThumbnail)) {
                     Storage::disk('public')->delete($oldThumbnail);
                 }
@@ -125,7 +126,9 @@ class DevelopmentRepository implements DevelopmentRepositoryInterface
         DB::beginTransaction();
         try {
             $development = Development::find($id);
-
+            if ($development->thumbnail && Storage::disk('public')->exists($development->thumbnail)) {
+                Storage::disk('public')->delete($development->thumbnail);
+            }
             $development->delete();
             DB::commit();
 

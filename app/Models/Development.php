@@ -3,13 +3,14 @@
 namespace App\Models;
 
 use App\Traits\UUID;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Development extends Model
 {
-    use UUID, SoftDeletes;
+    use UUID, SoftDeletes, HasFactory;
 
     protected $fillable = [
         'thumbnail',
@@ -25,7 +26,6 @@ class Development extends Model
     public function scopeSearch($query, $search)
     {
         return $query->where('name', 'like', '%' . $search . '%')
-            ->orWhere('description', 'like', '%' . $search . '%')
             ->orWhere('person_in_charge', 'like', '%' . $search . '%')
             ->orWhere('start_date', 'like', '%' . $search . '%')
             ->orWhere('end_date', 'like', '%' . $search . '%')

@@ -128,6 +128,11 @@ class HeadOfFamilyRepository implements HeadOfFamilyRepositoryInterface
 
         try {
             $headOfFamily = HeadOfFamily::find($id);
+
+            if ($headOfFamily->profile_picture && Storage::disk('public')->exists($headOfFamily->profile_picture)) {
+                Storage::disk('public')->delete($headOfFamily->profile_picture);
+            }
+
             $headOfFamily->delete();
 
             DB::commit();
